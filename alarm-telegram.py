@@ -43,7 +43,7 @@ def send_to_telegram(message, telegram_chatid):
     Sendet eine Nachricht an Telegram.
     """
     if not APIToken or not telegram_chatid:
-        logging.error(f"Chat ID or token is not configured. Message not sent. Token: {APIToken} Chat ID: {telegram_chatid}")
+        logging.error("Chat ID or token is not configured. Message not sent.")
         return
 
     APIURL = f'https://api.telegram.org/bot{APIToken}/sendMessage'
