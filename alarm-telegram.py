@@ -125,27 +125,6 @@ def send_emergency_alert(wache, message, message_for_bot):
     
     return None
 
-"""
-def get_matching_wachen(file):
-    # Path to XML
-    tree = ET.parse(file)
-    root = tree.getroot()
-    
-    # Sammle alle relevanten Werte aus der XML
-    xml_values = {column.get('value', '') for column in root.findall(".//Column")}
-    
-    # Finde Übereinstimmungen
-    matching_wachen = [wache for wache in wachen_list if wache in xml_values]
-
-    if matching_wachen:
-        message, message_for_bot = get_table(file, root)
-        for wache in matching_wachen:
-            send_emergency_alert(wache, message, message_for_bot)
-
-    else:
-        logging.info("No emergency for observed Teams")
-    return ()
-"""  
 
 def get_matching_wachen(file):
     """
