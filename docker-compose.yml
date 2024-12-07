@@ -1,0 +1,14 @@
+services:
+  alarm-telegram:
+    container_name: alarm-telegram
+    build: .
+    image: odinxii/alarm-telegram:latest
+    environment:
+      EMAIL_USERNAME: $(EMAIL_USERNAME)
+      EMAIL_PASSWORD: $(EMAIL_PASSWORD)
+      IMAP_SERVER: $(IMAP_SERVER)
+      IMAP_PORT: $(IMAP_PORT)
+      WACHEN: $(WACHEN)
+      TELEGRAM_CHATIDS: $(TELEGRAM_CHATIDS)
+      BOTS_CHATIDS: $(BOTS_CHAT_ID)
+      APITOKEN: $(APIToken)

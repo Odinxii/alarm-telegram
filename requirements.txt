@@ -1,0 +1,2 @@
+prettytable==3.10.2
+requests==2.32.3
