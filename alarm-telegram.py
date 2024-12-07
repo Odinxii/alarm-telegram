@@ -259,9 +259,9 @@ if __name__ == "__main__":
         imap_server = os.environ.get('IMAP_SERVER')
         imap_port = int(os.environ.get('IMAP_PORT', 993))
         wachen_list = os.environ.get('WACHEN','').split(',')
-        APIToken = os.environ.get('APIToken')
-        telegram_chatids = os.environ.get('telegram_chatids','').split(',')  
-        bot_chatids = os.environ.get('bot_chatids','').split(',')  
+        APIToken = os.environ.get('APITOKEN')
+        telegram_chatids = os.environ.get('TELEGRAM_CHATIDS','').split(',')  
+        bot_chatids = os.environ.get('BOT_CHATIDS','').split(',')  
 
         alarmierungs_daten = {
             wachen_list: {"telegram_chatid": telegram_chatid, "bot_chatid": bot_chatid}
