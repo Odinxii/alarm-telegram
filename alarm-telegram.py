@@ -125,7 +125,7 @@ def send_emergency_alert(wache, message, message_for_bot):
     
     return None
 
-
+"""
 def get_matching_wachen(file):
     # Path to XML
     tree = ET.parse(file)
@@ -145,7 +145,33 @@ def get_matching_wachen(file):
     else:
         logging.info("No emergency for observed Teams")
     return ()
-  
+"""  
+
+def get_matching_wachen(file):
+    """
+    Searches for matching 'Wachen' in the XML file based on their exact match or substring presence.
+    """
+    # Path to XML
+    tree = ET.parse(file)
+    root = tree.getroot()
+
+    # Collect all relevant values from the XML
+    xml_values = {column.get('value', '').lower() for column in root.findall(".//Column")}
+    
+    # Find matches based on full or partial match
+    matching_wachen = [
+        wache for wache in wachen_list
+        if any(wache.lower() in xml_value for xml_value in xml_values)
+    ]
+
+    if matching_wachen:
+        message, message_for_bot = get_table(file, root)
+        for wache in matching_wachen:
+            send_emergency_alert(wache, message, message_for_bot)
+    else:
+        logging.info("No emergency for observed Teams")
+    return ()
+
 
 def get_table(file, root):
     # list relevant Column Values if EM searched is in XML
