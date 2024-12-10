@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Alarm-Telegram_24.12.3
+Alarm-Telegram_24.12.5
 
-Created on 07.12.2024
+Created on 08.12.2024
 
 @author: Odinxii
 """
@@ -50,7 +50,7 @@ def send_to_telegram(message, telegram_chatid):
 
     for z in range(10):
         try:
-            response = requests.post(APIURL, json={'chat_id': telegram_chatid, 'text': message}, timeout = 5)
+            response = requests.post(APIURL, json={'chat_id': telegram_chatid, 'text': message}, timeout = 5 + z)
             data = response.json()
         
             # Prüfen, ob die Nachricht erfolgreich war
@@ -63,6 +63,7 @@ def send_to_telegram(message, telegram_chatid):
                 return None
         except requests.RequestException as e:
             logging.warning(f'Send Message Retry ... {z + 1}/10')
+            time.sleep(z^2)  # Exponentielle Wartezeit
             if z == 9:
                 logging.error(f"Telegram Chat Timeout\nChatID: {telegram_chatid}\n Error: {e}")
                 
@@ -84,6 +85,10 @@ def get_telegram_chatid_for_wache(wache, typ):
         logging.warning(f"No Telegram Chat ID or Bot ID found for the station '{wache}'.")
         return None
 
+def check_env_vars(*vars):
+    missing_vars = [var for var in vars if not os.environ.get(var)]
+    if missing_vars:
+        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
 
 def reconnect_imap():
     global imap
@@ -101,7 +106,8 @@ def reconnect_imap():
             # initialise IMAP
             imap = imaplib.IMAP4_SSL(imap_server, imap_port)
             imap.login(username, password)
-            logging.info("IMAP connection restored")
+            if imap.state == 'AUTH':
+                logging.info("IMAP connection restored")
             return imap
         except Exception as e:
             logging.error(f"Attempt {attempt + 1}/{max_retries} - Error while restoring the IMAP connection: {e}")
@@ -140,7 +146,7 @@ def get_matching_wachen(file):
     # Find matches based on full or partial match
     matching_wachen = [
         wache for wache in wachen_list
-        if any(wache.lower() in xml_value for xml_value in xml_values)
+        if any(xml_value.endswith(wache.lower()) for xml_value in xml_values)
     ]
 
     if matching_wachen:
@@ -267,6 +273,8 @@ if __name__ == "__main__":
         APIToken = os.environ.get('APITOKEN')
         telegram_chatids = os.environ.get('TELEGRAM_CHATIDS','').split(',')  
         bot_chatids = os.environ.get('BOT_CHATIDS','').split(',')  
+
+        check_env_vars('EMAIL_USERNAME', 'EMAIL_PASSWORD', 'IMAP_SERVER', 'APITOKEN', 'TELEGRAM_CHATIDS', 'BOT_CHATIDS')
 
         alarmierungs_daten = {
             wachen_list: {"telegram_chatid": telegram_chatid, "bot_chatid": bot_chatid}
